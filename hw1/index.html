@@ -51,27 +51,41 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-			1. How to rasterize.
-				- The idea is that a triangle covers a pixel if the pixel's center lies in the triangle.
-				the pixel center for a pixel at (x,y) = (x+0.5, y+0.5), For each triangle edge, check which side the point lies on.
 
-				- By the spec, we only needed to test pixels near the triangle.
-				- Then, I used the edge lambda function I defined, which told me the orientation. 
-				- Now if all 3 edge values are >= 0 or all 3 are <= 0then we are inside.
-				- Finally we just call the fill pixel function if that pixel belongs inside the triangle. 
-			2. How the algorithm comapres
-				- My algorithm only iterates over pixels whose centers lie inside that bounding box because it first computes the triangle’s axis-aligned bounding box.
-				- It doesn't scan the full framebuffer. 
-			
+		<ol>
+		  <li>
+			<p><b>How to rasterize.</b></p>
+			<ul>
+			  <li>The idea is that a triangle covers a pixel if the pixel's center lies in the triangle.</li>
+			  <li>the pixel center for a pixel at (x,y) = (x+0.5, y+0.5), For each triangle edge, check which side the point lies on.</li>
+		
+			  <li>By the spec, we only needed to test pixels near the triangle.</li>
+			  <li>Then, I used the edge lambda function I defined, which told me the orientation.</li>
+			  <li>Now if all 3 edge values are &gt;= 0 or all 3 are &lt;= 0then we are inside.</li>
+			  <li>Finally we just call the fill pixel function if that pixel belongs inside the triangle.</li>
+			</ul>
+		  </li>
+		
+		  <li>
+			<p><b>How the algorithm comapres</b></p>
+			<ul>
+			  <li>My algorithm only iterates over pixels whose centers lie inside that bounding box because it first computes the triangle’s axis-aligned bounding box.</li>
+			  <li>It doesn't scan the full framebuffer.</li>
+			</ul>
+		  </li>
+		</ol>
+		
 		<p>test4.</p>
+		
 		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="test.png" width="400px"/>
-				  <figcaption>Test 4.</figcaption>
-			  </tr>
-			</table>
+		  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+			<tr>
+			  <td style="text-align: center;">
+				<img src="test.png" width="400px"/>
+				<figcaption>Test 4.</figcaption>
+			  </td>
+			</tr>
+		  </table>
 		</div>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
