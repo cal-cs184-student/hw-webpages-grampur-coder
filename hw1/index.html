@@ -51,30 +51,25 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			1. How to rasterize.
+				- The idea is that a triangle covers a pixel if the pixel's center lies in the triangle.
+				the pixel center for a pixel at (x,y) = (x+0.5, y+0.5), For each triangle edge, check which side the point lies on.
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+				- By the spec, we only needed to test pixels near the triangle.
+				- Then, I used the edge lambda function I defined, which told me the orientation. 
+				- Now if all 3 edge values are >= 0 or all 3 are <= 0then we are inside.
+				- Finally we just call the fill pixel function if that pixel belongs inside the triangle. 
+			2. How the algorithm comapres
+				- My algorithm only iterates over pixels whose centers lie inside that bounding box because it first computes the triangle’s axis-aligned bounding box.
+				- It doesn't scan the full framebuffer. 
+			
+		<p>test4.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
+				  <img src="test.png" width="400px"/>
+				  <figcaption>Test 4.</figcaption>
 			  </tr>
 			</table>
 		</div>
