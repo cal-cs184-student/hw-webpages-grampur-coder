@@ -89,7 +89,56 @@
 		</div>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<ol>
+		  <li>
+			<b>Supersampling algorithm and data structures.</b><br>
+			I basically changed it so instead of storing one color per pixel, I store a bunch of samples per pixel.
+			I use <code>sample_buffer</code> sized <code>width × height × sample_rate</code>. Each pixel gets a
+			√sample_rate by √sample_rate grid of sub samples. When I rasterize a triangle I check every sub-sample
+			spot inside the pixel and if its inside the triangle I write the color into that sub sample slot.
+		  </li>
+		
+		  <li>
+			<b>Why supersampling is useful.</b><br>
+			Supersampling helps fix the jagged edges on triangles. With only one sample per pixel its like all or
+			nothing, so edges look stair-steppy. With more samples per pixel you can get partial coverage and when
+			you average them it looks way smoother.
+		  </li>
+		
+		  <li>
+			<b>Modifications to the rasterization pipeline.</b><br>
+			I resized the sample buffer whenever the framebuffer size or sample rate changes, updated
+			<code>rasterize_triangle</code> to loop over sub samples instead of just the center, changed
+			<code>fill_pixel</code> so points and lines just fill every sub sample in that pixel, and then changed
+			<code>resolve_to_framebuffer</code> to average all the sub samples into the final color.
+		  </li>
+		
+		  <li>
+			<b>How supersampling antialiases triangles.</b><br>
+			For each pixel in the triangle bounding box I test all the sub sample positions with the same edge test.
+			The ones inside get colored, the others stay background. Then at the end I average them together, so edge
+			pixels end up partially filled instead of fully on/off, which is why the triangle edges look smoother.
+		  </li>
+		</ol>
+
+<div style="display:flex; gap:20px; justify-content:center;">
+  <figure>
+    <img src="test4_1.png" width="300">
+    <figcaption>Sample rate = 1</figcaption>
+  </figure>
+
+  <figure>
+    <img src="test4_4.png" width="300">
+    <figcaption>Sample rate = 4</figcaption>
+  </figure>
+
+  <figure>
+    <img src="test4_16.png" width="300">
+    <figcaption>Sample rate = 16</figcaption>
+  </figure>
+</div>
+
 
 		<h2>Task 3: Transforms</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
