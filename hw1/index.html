@@ -141,11 +141,55 @@
 
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		1. For this task I just made the robot wave his arm. 
+		<figure style="text-align:center;">
+			<img src="robot.png" width="400">
+			<figcaption>My waving robot render.</figcaption>
+		  </figure>
 
-		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		  <h2>Task 4: Barycentric Coordinates</h2>
 
+		  <ol>
+			<li>
+			  <b>What barycentric coordinates are.</b><br>
+			  Barycentric coordinates are basically just weights for the three vertices of a triangle.
+			  For any point inside the triangle you get 3 numbers (w0, w1, w2) that add up to 1.
+			  If the point is closer to one vertex then that vertex’s weight is bigger.
+			  On a vertex its weight is 1 and the other two are 0.
+			</li>
+		  
+			<li>
+			  <b>How I use them for color interpolation.</b><br>
+			  Each vertex has a color, like red, green, and blue.
+			  Then for a point inside the triangle I just do:
+			  <code>color = w0*c0 + w1*c1 + w2*c2</code>.
+			  So the color smoothly blends depending on where you are.
+			  Near the red corner its mostly red, near green its mostly green, etc.
+			</li>
+		  
+			<li>
+			  <b>Image example.</b><br>
+			  This triangle shows one red, one green, and one blue vertex.
+			  You can see how the inside just smoothly blends between them.
+			</li>
+		  </ol>
+		  
+		  <div style="display:flex; gap:20px; justify-content:center;">
+			<figure style="text-align:center;">
+			  <img src="triangle.png" width="300">
+			  <figcaption>RGB vertex triangle.</figcaption>
+			</figure>
+		  
+			<figure style="text-align:center;">
+			  <img src="circle.png" width="300">
+			  <figcaption>basic/test7.svg</figcaption>
+			</figure>
+		  </div>
+		  
+		  <p>
+		  I took the screenshot for test7 using the S hotkey with the default settings and sample rate 1.
+		  </p>
+		  
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
