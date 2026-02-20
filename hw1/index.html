@@ -186,29 +186,162 @@
 			</figure>
 		  </div>
 		  
+
+		  
+		  <h2>Task 5: Pixel sampling for texture mapping</h2>
+
+		  <ol>
+			<li>
+			  <b>What pixel sampling is (in my words).</b><br>
+			  Pixel sampling is basically: once i know a screen sample is inside the triangle, i map that point to a (u,v)
+			  coordinate on the texture, and then i need to decide what color to grab from the texture image.
+			  Like uv is usually not landing exactly on a texel, so sampling is just how we pick the final color.
+			</li>
+		  
+			<li>
+			  <b>How I implemented texture mapping.</b><br>
+			  For each triangle sample (and each subsample when sample_rate &gt; 1), i compute barycentric coords, use those to
+			  interpolate the triangle’s (u,v), then i call <code>tex.sample</code> with my <code>SampleParams</code>.
+			  The GUI toggle with <code>P</code> changes <code>psm</code> so it switches between nearest vs bilinear.
+			  Then i write that color into the correct slot in <code>sample_buffer</code> and resolve like normal by averaging.
+			</li>
+		  
+			<li>
+			  <b>Nearest vs Bilinear .</b><br>
+			  <ul>
+				<li>
+				  <b>Nearest:</b> just picks the closest texel (one pixel in the texture). it’s fast but it looks blocky,
+				  especially when the texture is zoomed in or rotated.
+				</li>
+				<li>
+				  <b>Bilinear:</b> takes the 4 surrounding texels and blends them. it’s smoother because it doesn’t do those
+				  hard jumps between texels.
+				</li>
+			  </ul>
+			</li>
+		  
+			<li>
+			  <b>Where bilinear clearly beats nearest.</b><br>
+			  I looked in <code>svg/texmap/</code> and used the pixel inspector on a spot where the texture is at a slant /
+			  shrinking so you get lots of “in-between” uv coords. Nearest looks super chunky there, but bilinear looks way smoother.
+			</li>
+		  </ol>
+		  
 		  <p>
-		  I took the screenshot for test7 using the S hotkey with the default settings and sample rate 1.
+		  Below are the 4 screenshots they asked for (same view / same pixel inspector area):
 		  </p>
 		  
-		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		  <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-start;">
+			<figure style="text-align:center;">
+			  <img src="pixel_1.png" width="320" alt="Nearest sampling, 1 sample per pixel">
+			  <figcaption>Nearest, sample rate = 1</figcaption>
+			</figure>
+		  
+			<figure style="text-align:center;">
+			  <img src="pixel16.png" width="320" alt="Nearest sampling, 16 samples per pixel">
+			  <figcaption>Nearest, sample rate = 16</figcaption>
+			</figure>
+		  
+			<figure style="text-align:center;">
+			  <img src="bilinear_1.png" width="320" alt="Bilinear sampling, 1 sample per pixel">
+			  <figcaption>Bilinear, sample rate = 1</figcaption>
+			</figure>
+		  
+			<figure style="text-align:center;">
+			  <img src="bilinear_16.png" width="320" alt="Bilinear sampling, 16 samples per pixel">
+			  <figcaption>Bilinear, sample rate = 16</figcaption>
+			</figure>
+		  </div>
+		  
+		  <p>
+		  <b>Comments / differences:</b><br>
+ The biggest difference between nearest and bilinear happens when the texture is being
+		  magnified a lot, or it’s at an angle / shrinking so the uv coords land between texels constantly.
+		  </p>
+		  
+		  <h2>Task 6: Level Sampling with mipmaps for texture mapping</h2>
 
-		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		  Level sampling is just picking which mipmap level to sample from. Like if the texture is getting shrunk a lot on the screen, sampling from the full res image is gonna alias and shimmer because too much detail is getting crammed into one pixel. So mipmaps are just smaller and smaller copies of the same texture, and level sampling is choosing the right sized copy for the current zoom.
+		  
+		  How I implemented it for texture mapping was:
+		  First I built the mipmap pyramid. Level 0 is the original texture. Then each next level is half the width and half the height until it hits 1 by 1. Each mip level is made by downsampling the previous level using a simple average of a 2 by 2 block into one pixel.
+		  
+		  Then when I sample the texture for a pixel, I compute how “big” the pixel footprint is in texture space using the uv derivatives. The renderer gives me uv for the current sample plus uv for moving one pixel in x and one pixel in y. I use that to estimate how fast u and v are changing across the screen. If uv changes a lot across 1 screen pixel, that means the texture is being minified hard so I should use a higher mip level. If uv changes only a tiny amount, then level 0 is fine.
+		  
+		  Concretely I do this:
+		  I convert the uv step sizes into texel units by multiplying by the texture width and height. Then I take the max of the two step magnitudes as the footprint size. Then level is log base 2 of that footprint. After that I clamp the level to the valid range.
+		  
+		  For L_ZERO I just force the level to 0 every time.
+		  For L_NEAREST I pick the nearest mip level index from the computed level and sample from that mipmap image.
+		  
+		  After the level is chosen, pixel sampling happens inside that mip level.
+		  P_NEAREST grabs the closest texel.
+		  P_LINEAR does bilinear interpolation using the 4 surrounding texels.
+		  
+		  </br>
+		  
+		  <h2>Tradeoffs between pixel sampling, level sampling, and samples per pixel</h2>
+		  
+		  There are 3 different knobs that affect quality and performance.
+		  
+		  <b>Pixel sampling</b><br>
+		  P_NEAREST is the fastest because it is one lookup.
+		  P_LINEAR is slower because it reads 4 texels and blends them.
+		  Memory is basically the same for both.
+		  Quality wise P_LINEAR looks smoother up close, but it does not fix the big problem when the texture is zoomed out. It can still shimmer since you are still sampling from a texture that has way too much detail for the pixel.
+		  
+		  <b>Level sampling</b><br>
+		  L_ZERO is fastest and uses the least memory because it always samples level 0 and you do not need mipmaps.
+		  L_NEAREST is a bit slower because you compute the mip level and you sample from a mipmap.
+		  Memory goes up because mipmaps store extra images. It is around one third more memory than the base texture.
+		  Quality wise this is the big win for minification. It reduces moiré and that crawling shimmer a lot because you are sampling from a lower detail version that matches the pixel footprint.
+		  
+		  <b>Number of samples per pixel</b><br>
+		  More samples per pixel is the slowest because you are doing multiple evaluations per pixel. Like 4 samples per pixel is basically around 4 times the work.
+		  Memory can go up a bit depending on implementation, but mostly it is compute expensive.
+		  Quality wise it is the strongest overall anti aliasing because it helps both texture aliasing and geometry edge aliasing. It is like brute force averaging.
+		  
+		  So the vibe is:
+		  Pixel sampling helps smooth inside one texture level.
+		  Level sampling fixes zoomed out texture aliasing.
+		  More samples per pixel gives the best anti aliasing overall but costs the most time.
+		  
+		  </br>
+		  
+		  <h2>Four versions using my png and the required combos</h2>
+		  
+		  I picked a png that has thin lines and sharp high frequency patterns so the differences show up clearly when zooming out.
+		  
+		  To use my png I copied one of the svg files in svg texmap and changed the texture filename near the top to point to my png. Then I ran ./draw with that svg. For each setting combo I used the S hotkey to save screenshots.
+		  
+		  What I see in the results:
+		  L_ZERO and P_NEAREST looks the worst. was kind of jagged.
+		  L_ZERO and P_LINEAR is smoother up close but still shimmers when zoomed out.
+		  L_NEAREST and P_NEAREST is way more stable but still kind of crunchy.
+		  L_NEAREST and P_LINEAR is the best here. stable and smooth and least moiré.
+		  I did a 16 supersampling rate for all.
+		  
+		  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+			<div>
+			  <p><b>L_ZERO and P_NEAREST</b></p>
+			  <img src="zeroandnear.png" width="100%">
+			</div>
+			<div>
+			  <p><b>L_ZERO and P_LINEAR</b></p>
+			  <img src="zeroandlinear.png" width="100%">
+			</div>
+			<div>
+			  <p><b>L_NEAREST and P_NEAREST</b></p>
+			  <img src="nearandnear.png" width="100%">
+			</div>
+			<div>
+			  <p><b>L_NEAREST and P_LINEAR</b></p>
+			  <img src="nearandlinear.png" width="100%">
+			</div>
+		  </div>
+		  
+		  </br>
+		  
 		</div>
 	</body>
 </html>
