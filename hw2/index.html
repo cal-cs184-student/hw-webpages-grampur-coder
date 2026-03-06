@@ -53,37 +53,49 @@
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			De Casteljau’s algorithm evaluates a Bezier curve by repeatedly linearly interpolating between adjacent control points using \(t\).
+			Each step makes a new set of points \(p_i' = (1-t)p_i + tp_{i+1}\) until there’s one point left, which is the point on the curve at \(t\).
+			I implemented this in <code>BezierCurve::evaluateStep</code> by looping through the input points, lerping each adjacent pair with \(t\), and <code>push_back</code>’ing into a new vector.
+			</p>
 
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="before.png" width="400px"/>
+				  <figcaption>before stepping.</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
+				  <img src="middle.png" width="400px"/>
+				  <figcaption>middle step.</figcaption>
+				</td>	
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="final.png" width="400px"/>
+				  <figcaption>final step.</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="ayo.png" width="400px"/>
+				  <figcaption>Curve after moving the points.</figcaption>
 				</td>
 			  </tr>
 			</table>
 		</div>
 
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			For surfaces it’s the same de Casteljau idea but done twice: first treat each row of the control grid as a Bezier curve and evaluate it at <code>u</code>, which gives one point per row.
+			Then those points form another Bezier curve and I evaluate that at <code>v</code> to get the final surface point.
+			I implemented this by reusing the same 1D “lerp between neighbors” step (<code>evaluateStep</code>), looping it in <code>evaluate1D</code>, then doing row-at-<code>u</code> followed by column-at-<code>v</code> in <code>evaluate</code>.
+			</p>
 
+			<figure>
+				<img src="frock.png" width="700px"/>
+				<figcaption>Bezier surface evaluation of teapot>.</figcaption>
+			  </figure>
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
