@@ -99,19 +99,106 @@
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			I did vertex normals by walking around the “fan” of triangles touching a vertex using the halfedge pointers. For each triangle, I grabbed its 3 vertex positions, took a cross product to get the face normal (which is automatically area-weighted), summed all of those up, and normalized at the end. When I press <code>Q</code> in meshedit it switches from flat shading to smooth shading using these normals.
+		</p>
+		
+		<figure>
+			<img src="not smooth.png" width="700px"/>
+			<figcaption>not smooth teapot>.</figcaption>
+		</figure>
 
+		<figure>
+			<img src="smooth.png" width="700px"/>
+			<figcaption>smooth teapot>.</figcaption>
+		  </figure>
 		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
+		<p>
+			For edge flip I basically just grabbed the two triangles that share the edge (so 6 halfedges total: the edge’s halfedge + its twin, and the two “next” halfedges on each face). If either adjacent face is a boundary face I just return and don’t flip. Otherwise I rewire the local pointers so the old edge (between the two shared vertices) becomes the diagonal connecting the two opposite vertices, and I set <code>next/twin/vertex/edge/face</code> for each of the 6 halfedges (plus updating the affected vertex/edge/face halfedge pointers). My main “debug trick” was literally drawing the local picture and then setting every pointer explicitly, because missing one pointer makes the mesh instantly explode or select weird stuff.
+			</p>
+			
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+				  <td style="text-align: center;">
+					<img src="no flip.png" width="420px"/>
+					<figcaption>Before flips.</figcaption>
+				  </td>
+				  <td style="text-align: center;">
+					<img src="flip.png" width="420px"/>
+					<figcaption>After flipping a few edges	.</figcaption>
+				  </td>
+				</tr>
+			  </table>
+			</div>
 		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			For edge split I only touch the local neighborhood around the chosen edge . I ignore boundary edges, make a new vertex at the midpoint, then create the minimum new stuff (3 new edges, 2 new faces, and the needed halfedges) so the original 2 triangles become 4 triangles. The main trick was labeling all the halfedges in a drawing first and then setting <code>next/twin/vertex/edge/face</code> for every halfedge explicitly if you miss even one pointer the mesh messes up itself.
+		</p>
 
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="none.png" width="420px"/>
+				  <figcaption>Before edge splits.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="split.png" width="420px"/>
+				  <figcaption>After splitting a few edges ).</figcaption>
+				</td>
+			  </tr>
+			</table>
+		  </div>
+
+		  <div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="split_flip.png" width="420px"/>
+				  <figcaption>after split and flip.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		  </div>
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			For Loop subdivision I first computed all the updated positions on the original mesh and stored them in <code>newPosition</code>, since doing that after splitting everything would be way more painful. Then I split every original edge, flipped the new edges that connect one old vertex and one new vertex, and  copied the stored positions into the actual vertex positions. The main thing that helped was uing <code>isNew</code> on both vertices and edges so I could keep track of what was original and what got created during subdivision, because otherwise itll gets confusing insanely fast.
+			</p>
+			
+			<p>
+			After subdivision the mesh gets a lot smoother and starts approximating a rounder limit surface. Sharp edges and corners get softened, so stuff like a cube starts losing its hardness pretty fast. You can reduce that a bit by pre splitting or flipping edges in a more symmetric way before subdivision, since that gives the algorithm a clean and more balanced connectivity to work with.
+			</p>
+			<p>
+				When I ran Loop subdivision on the cube a few times, the cube became slightly asymmetric. That happens because even though the geometry starts symmetric, the triangulation/connectivity of the cube isn’t perfectly symmetric, so subdivision fixes that imbalance and smooths different regions a little differently. 
+			</p>
+		</p>
+		Preprocessing helps because Loop subdivision depends on the local mesh structure when computing new vertex positions.
+		</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="loop1.png" width="420px"/>
+					  <figcaption>Mesh with some Loop subdivision.</figcaption>
+					</td>
+					<td style="text-align: center;">
+					  <img src="loop2.png" width="420px"/>
+					  <figcaption>Mesh after a lot of Loop subdivision.</figcaption>
+					</td>
+				  </tr>
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="loop.png" width="420px"/>
+					  <figcaption>Cube after repeated subdivision showing slight asymmetry.</figcaption>
+					</td>
+					<td style="text-align: center;">
+					  <img src="preprocess.png" width="420px"/>
+					  <figcaption>Cube after pre-processing with flips/splits, then subdivision.</figcaption>
+					</td>
+				  </tr>
+				</table>
+			  </div>
 
 		<h2>Additional Notes (please remove)</h2>
 		<ul>
