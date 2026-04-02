@@ -32,8 +32,8 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html">cs184.eecs.berkeley.edu/sp25</a>
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: (TODO) <a href="https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html">https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html></a>
+		Link to GitHub repository: (TODO) <a href="https://github.com/grampur-coder/hw3-for-now">https://github.com/grampur-coder/hw3-for-now</a>
 		
 		<figure>
 			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
@@ -59,7 +59,7 @@
 		
 			<h3>Triangle Intersection Algorithm</h3>
 			<p>
-				To actually hit stuff in the scene, I implemented the <b>Möller-Trumbore</b> algorithm for the triangles. It's cool because it doesn't make you solve for the plane equation first which saves a lot of work. Basically, it uses some vector math to solve for the time <i>t</i> and the barycentric coordinates <i>u</i> and <i>v</i> all at once. 
+				To actually hit stuff in the scene, I implemented the moller-Trumbore algorithm for the triangles. It's cool because it doesn't make you solve for the plane equation first which saves a lot of work. Basically, it uses some vector math to solve for the time <i>t</i> and the barycentric coordinates <i>u</i> and <i>v</i> all at once. 
 			</p>
 			<p>
 				If the <i>t</i> value is between the ray's min_t and max_t, and if the u and v coordinates make sense (meaning they stay inside the triangle), then we got a hit. One thing I had to remember was to update the ray's <b>max_t</b> every time I found a closer hit. If you dont do that, the camera won't know which triangle is in front of the other and the whole image comes out looking broken. For the spheres, it was just a quadratic formula to find where the ray hits the surface, picking the smallest positive <i>t</i>.
@@ -74,7 +74,7 @@
 					</td>
 					<td style="padding: 10px;">
 					  <img src="banana.png" width="400px"/>
-					  <figcaption>A banana mesh. A lot more triangles to intersect here!</figcaption>
+					  <figcaption>A banana mesh. A lot more triangles to intersect here</figcaption>
 					</td>
 				  </tr>
 				  <tr>
@@ -82,10 +82,7 @@
 					  <img src="CBspheres.png" width="400px"/>
 					  <figcaption>Spheres showing off the analytical intersection logic.</figcaption>
 					</td>
-					<td style="padding: 10px;">
-					  <img src="CBempty.png" width="400px" style="filter: saturate(0.5);"/>
-					  <figcaption>Another render of the box just to show everything is working right.</figcaption>
-					</td>
+
 				  </tr>
 				</table>
 			</div>
