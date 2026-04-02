@@ -32,7 +32,7 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: (TODO) <a href="https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html">cs184.eecs.berkeley.edu/sp25</a>
 		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
 		
 		<figure>
@@ -47,33 +47,48 @@
 		<h2>Overview</h2>
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
-		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
+		<div id="part1-writeup">
+			<h2>Part 1: Ray Generation and Scene Intersection</h2>
+			
+			<p>
+				So, for the first part of the project, I had to figure out how to actually "see" the scene. The ray generation part is basically about taking a pixel on your screen and turning it into a 3D ray that shoots out into the world. You start with the x and y coordinates of a pixel, normalize them so they're between 0 and 1, and then move them into "camera space." 
+			</p>
+			<p>
+				In camera space, the camera is at (0,0,0) and looking down the -Z axis. I used the field of view (hFov and vFov) to scale the sensor plane so the rays spread out correctly. Once I have the direction in camera space, I multiply it by the <b>c2w</b> matrix to get it into world space. This was a bit tricky because you have to make sure the origin of the ray is the actual camera position in the world, and that the direction vector is normalized or else the intersection math gets all weird later.
+			</p>
+		
+			<h3>Triangle Intersection Algorithm</h3>
+			<p>
+				To actually hit stuff in the scene, I implemented the <b>Möller-Trumbore</b> algorithm for the triangles. It's cool because it doesn't make you solve for the plane equation first which saves a lot of work. Basically, it uses some vector math to solve for the time <i>t</i> and the barycentric coordinates <i>u</i> and <i>v</i> all at once. 
+			</p>
+			<p>
+				If the <i>t</i> value is between the ray's min_t and max_t, and if the u and v coordinates make sense (meaning they stay inside the triangle), then we got a hit. One thing I had to remember was to update the ray's <b>max_t</b> every time I found a closer hit. If you dont do that, the camera won't know which triangle is in front of the other and the whole image comes out looking broken. For the spheres, it was just a quadratic formula to find where the ray hits the surface, picking the smallest positive <i>t</i>.
+			</p>
+		
+			<div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="CBempty.png" width="400px"/>
+					  <figcaption>The empty Cornell Box. You can see the normals on the walls.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="banana.png" width="400px"/>
+					  <figcaption>A banana mesh. A lot more triangles to intersect here!</figcaption>
+					</td>
+				  </tr>
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="CBspheres.png" width="400px"/>
+					  <figcaption>Spheres showing off the analytical intersection logic.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="CBempty.png" width="400px" style="filter: saturate(0.5);"/>
+					  <figcaption>Another render of the box just to show everything is working right.</figcaption>
+					</td>
+				  </tr>
+				</table>
+			</div>
 		</div>
 		
 		<h2>Part 2: Bounding Volume Hierarchy</h2>
