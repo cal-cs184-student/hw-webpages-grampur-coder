@@ -88,9 +88,41 @@
 			</div>
 		</div>
 		
-		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
+		<div id="part2-writeup">
+			<h2>Part 2: Bounding Volume Hierarchy</h2>
+		
+			<p>
+				Building the BVH was all about making the renderer actually fast enough to use. The basic idea is that instead of checking every single triangle in the scene for a hit you group them into boxes. My algorithm works recursively by looking at a list of primitives and making a big bounding box that fits all of them. If the number of primitives is small enough I just make a leaf node and stop there. 
+			</p>
+			<p>
+				If there are too many triangles I have to split them into two groups. To do this I first look at the bounding box and figure out which axis is the longest like X Y or Z. I chose to use the <b>average of the centroids</b> of all the primitives as my splitting point. It is a simple heuristic but it works really well because it usually splits the geometry right down the middle spatially. I then use std::partition to reorder the primitives and call the function again for the left and right children. 
+			</p>
+		
+			
+		
+			<h3>Normal Shading for Complex Meshes</h3>
+			<div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="cow.png" width="400px"/>
+					  <figcaption>The cow mesh.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="angel.png" width="400px"/>
+					  <figcaption>Angel model with lots of triangles.</figcaption>
+					</td>
+				  </tr>
+				</table>
+			</div>
+		
+			<h3>Performance Analysis</h3>
+			<p>
+				The difference in render times with and without the BVH is insane. For the cow.dae file it went from taking about 40 seconds to render down to  0.141 seconds which is a huge jump. When I tried rendering even bigger files without the BVH it felt like the program just froze because it was doing so much O(n) work for every single ray. Using the BVH turns the complexity into O(log n) so as the scenes get more complex the render time doesnt explode anymore and it stays pretty fast even for meshes with thousands of triangles. The Angel image took around 45 seconds before and 0.285 after.
+			</p>
+		
+			
+		</div>
 		<h2>Part 3: Direct Illumination</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
