@@ -28,13 +28,13 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 3 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Gautam Rampur </div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html">https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html></a>
-		Link to GitHub repository: (TODO) <a href="https://github.com/grampur-coder/hw3-for-now">https://github.com/grampur-coder/hw3-for-now</a>
-		
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html">https://cal-cs184-student.github.io/hw-webpages-grampur-coder/hw3/index.html</a>
+		<br>
+		Link to GitHub repository: <a href="https://github.com/grampur-coder/hw3-for-now">https://github.com/grampur-coder/hw3-for-now</a>
 		<figure>
 			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
 			<figcaption>You can add images with captions!</figcaption>
@@ -123,28 +123,172 @@
 		
 			
 		</div>
-		<h2>Part 3: Direct Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<div id="part3-writeup">
+			<h2>Part 3: Direct Illumination</h2>
 		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+			<p>
+				In this part I implemented two ways to calculate direct lighting. The first is <b>Uniform Hemisphere Sampling</b>. For this one we just pick a bunch of random directions in a hemisphere around the hit point and check if those rays hit a light source. If they do we add that light to the pixel. It's basically a brute force way of seeing where the light is coming from.
+			</p>
+			<p>
+				The second way is <b>Importance Sampling</b>. Instead of looking in random directions we just look directly at the lights in the scene. We loop through all the light sources and sample them. If there isnt an object in the way (we check this with a shadow ray) we add the light. This is way more efficient because we arent wasting rays looking at dark walls when we could be looking at the light bulb.
+			</p>
+		
+			<h3>Uniform Hemisphere vs. Importance Sampling</h3>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="CBbunny_H_64_32.png" width="400px"/>
+					  <figcaption>Uniform Hemisphere Sampling. Notice how grainy the shadows are.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="CBbunny_I_64_32.png" width="400px"/>
+					  <figcaption>Importance Sampling. Same settings but the shadows are way smoother.</figcaption>
+					</td>
+				  </tr>
+				</table>
+			</div>
+		
+			<h3>Shadow Noise with Different Light Ray Counts</h3>
+			<p>
+				These images show how the noise in the soft shadows goes away as we increase the number of light rays (-l flag) while keeping the samples per pixel at 1.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="bunny_1_1.png" width="400px"/>
+					  <figcaption>1 Light Ray: Very noisy shadows.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="bunny_1_4.png" width="400px"/>
+					  <figcaption>4 Light Rays: Shadows starting to take shape.</figcaption>
+					</td>
+				  </tr>
+				  <tr>
+					<td style="padding: 10px;">
+					  <img src="bunny_1_16.png" width="400px"/>
+					  <figcaption>16 Light Rays: Much cleaner but still some speckles.</figcaption>
+					</td>
+					<td style="padding: 10px;">
+					  <img src="bunny_1_64.png" width="400px"/>
+					  <figcaption>64 Light Rays: Nice smooth soft shadows.</figcaption>
+					</td>
+				  </tr>
+				</table>
+			</div>
+		
+			<h3>Analysis</h3>
+			<p>
+				Comparing the two methods you can really see why importance sampling is better. Uniform hemisphere sampling is super noisy because most of the rays we fire just hit the ceiling or the walls and dont contribute any light. You would need a ton of samples per pixel to make it look good. Importance sampling is way cleaner because every ray we fire actually goes toward a light source so we get a lot more information with fewer rays. It also lets us use point lights which wouldnt even show up in hemisphere sampling because the chance of a random ray hitting a single point is basically zero.
+			</p>
+		</div>
+		<div id="part4-writeup">
+			<h2>Part 4: Global Illumination</h2>
+		
+			<p>
+				In this part I implemented <b>at_least_one_bounce_radiance</b> to handle indirect lighting. This function is recursive because to find the light hitting a point we have to look at where that light came from which might be another surface in the scene. I used <b>Russian Roulette</b> to decide when to stop the rays. This makes sure the rays dont bounce forever but the math stays unbiased because we divide by the survival probability.
+			</p>
+		
+			<h3>Direct vs. Indirect Illumination</h3>
+			<p>
+				Here is the bunny rendered with only direct light versus only indirect light. You can see the direct version has black shadows and a black ceiling because the light hasnt bounced yet. The indirect version shows the light that bounced off the floor and walls to light up the rest of the room.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td><img src="bunny_direct.png" width="400px"/><figcaption>Only Direct Lighting.</figcaption></td>
+					<td><img src="bunny_indirect.png" width="400px"/><figcaption>Only Indirect Lighting.</figcaption></td>
+				  </tr>
+				</table>
+			</div>
+		
+			<h3>Accumulated Bounces (m=0 to m=5)</h3>
+			<p>
+				As I increased the max_ray_depth the scene got much brighter. At m=0 we only see the light source itself. At m=1 we see the boxes but the shadows and ceiling are black. By m=2 and m=3 the ceiling finally lights up because light is bouncing off the floor and hitting it. Higher bounces add subtle color bleeding from the red and blue walls onto the white surfaces.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td><img src="bunny_m0.png" width="160px"/><figcaption>m=0</figcaption></td>
+					<td><img src="bunny_m1.png" width="160px"/><figcaption>m=1</figcaption></td>
+					<td><img src="bunny_m2.png" width="160px"/><figcaption>m=2</figcaption></td>
+					<td><img src="bunny_m3.png" width="160px"/><figcaption>m=3</figcaption></td>
+					<td><img src="bunny_m4.png" width="160px"/><figcaption>m=4</figcaption></td>
+					<td><img src="bunny_m5.png" width="160px"/><figcaption>m=5</figcaption></td>
+				  </tr>
+				</table>
+			</div>
+		
+			<h3>Sample Rate Comparison</h3>
+			<p>
+				Since we are using random sampling the image starts out very noisy. At 1 sample per pixel it looks like static. As we increase to 1024 samples the noise clears up and the soft global illumination effects like smooth shadows and color bleeding become very clear.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td><img src="spheres_s1.png" width="300px"/><figcaption>1 Sample Per Pixel</figcaption></td>
+					<td><img src="spheres_s1024.png" width="300px"/><figcaption>1024 Samples Per Pixel</figcaption></td>
+				  </tr>
+				</table>
+			</div>
+		</div>
+		<div id="part5-writeup">
+			<h2>Part 5: Adaptive Sampling</h2>
+		
+			<p>
+				The final part of the project was <b>Adaptive Sampling</b>. The problem with standard path tracing is that we waste a lot of time on pixels that are already smooth while other pixels are still noisy. My implementation tracks the mean and variance of the illuminance every 32 samples. If the 95% confidence interval is small enough relative to the mean, I assume the pixel has converged and stop sampling.
+			</p>
+		
+			<h3>Adaptive Bunny and Sampling Rate</h3>
+			<p>
+				Here is the bunny rendered with a max of 2048 samples. In the sampling rate image, <b>red</b> represents high sampling counts and <b>blue</b> represents areas that converged quickly. You can see that the shadows and edges of the bunny needed more samples while the flat walls and the open floor were finished much faster.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td><img src="bunny.png" width="400px"/><figcaption>Final Rendered Bunny.</figcaption></td>
+					<td><img src="bunny_rate.png" width="400px"/><figcaption>The Sampling Rate Map (_rate.png).</figcaption></td>
+				  </tr>
+				</table>
+			</div>
+		</div>
+
+		<div id="part6-extra-credit">
+			<h2>Part 6: Extra Credit</h2>
+		
+			<h3>1. Iterative BVH Traversal</h3>
+			<p>
+				I optimized the ray scene intersection engine by replacing the default recursive BVH traversal with an <b>Iterative Stack-based approach</b>. 
+			</p>
+			<p>
+				<b>Method:</b> By using <code>std::stack</code>, I eliminated the overhead of recursive function calls. The algorithm manually manages the traversal, pushing child nodes onto the stack and pruning branches early if the ray misses the bounding box or if the intersection point is already further than the current <code>max_t</code>.
+			</p>
+			<p>
+				<b>Results:</b> This optimization increased the rendering throughput (Rays/sec) by roughly a small amount across various scenes, it was mostly good at reducing the time required for high-sample-rate renders, likely because for higher samples there were more recursive calls, and the recursive stack was bigger.
+			</p>
+		
+			<h3>2. Jittered (Stratified) Pixel Sampling</h3>
+			<p>
+				To improve image quality at lower sample rates, I implemented <b>Jittered Sampling</b> in the pixel integrator.
+			</p>
+			<p>
+				<b>Method:</b> Instead of picking <code>ns_aa</code> random points within a pixel, I divided the pixel into an <code>sqrt(ns_aa)</code> by <code>sqrt(ns_aa)</code> grid. For each grid cell, I took exactly one sample with a random jittered offset.
+			</p>
+			<p>
+				<b>Results:</b> This technique allowed fors a more uniform distribution of samples across the pixel area, preventing the clumping that comes with with pure Monte Carlo sampling.The high frequency noise in soft shadows and reflections is much more evenly distributed, making the image appear smoother and more visually pleasing at lower sample counts.
+			</p>
+
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td><img src="jitter_test_16.png" width="300px"/><figcaption>jittered</figcaption></td>
+					<td><img src="bunny_random_16.png" width="300px"/><figcaption>non-jitter</figcaption></td>
+				  </tr>
+				</table>
+			</div>
+		</div>
+		
 		</div>
 	</body>
 </html>
