@@ -46,7 +46,7 @@
 		<!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
-
+		<h2>I USED AI FOR HELP WITH HTML FORMATTING AND WORDING</ht2>
 		<h2>Overview</h2>
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
@@ -75,8 +75,66 @@
 		</div>
 
 		<h2>Part 2: Simulation via numerical integration</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+		<p>In this section, we experiment with the numerical integration simulation by modifying various physical parameters to observe their effects on the cloth's behavior from a starting drop to its final resting state.</p>
+		
+		<h3>1. Effects of Varying the Spring Constant ($k_s$)</h3>
+		<p>The spring constant dictates the stiffness of the structural, shearing, and bending springs, determining the restorative force they apply when stretched.</p>
+		<ul>
+			<li><strong>Very Low $k_s$:</strong> The cloth behaves like a highly elastic material, such as rubber or Spandex. Because the springs are weak, they exert very little force to maintain their rest length. The weight of the cloth overcomes these springs, causing the cloth to stretch dramatically and sag far down before coming to rest.</li>
+			<li><strong>High $k_s$:</strong> The cloth acts like a stiff, heavy fabric like canvas or denim. The strong restorative forces resist deformation, causing the cloth to quickly fold into shape. Its resting state looks tightly held together with minimal stretching.</li>
+		</ul>
+		
+		<div style="text-align: center; margin-top: 15px;">
+			<figure>
+				<img src="increased ks.png" alt="Cloth at rest with an increased spring constant" width="500"/>
+				<figcaption><b>Increased $k_s$:</b> Tighter, stiffer structure with minimal stretching.</figcaption>
+			</figure>
+		</div>
+		
+		<hr/>
+		
+		<h3>2. Effects of Varying Density</h3>
+		<p>Density directly scales the mass of each point particle in the simulation. This impacts the total downward gravitational force ($F = mg$) acting on the cloth.</p>
+		<ul>
+			<li><strong>Low Density:</strong> The cloth is incredibly light. The lower mass means less gravitational force pulls down on the system.</li>
+			<li><strong>High Density:</strong> The cloth acts heavy. The immense mass causes gravity to pull down with much greater force.</li>
+		</ul>
+		
+		<div style="text-align: center; margin-top: 15px;">
+			<figure>
+				<img src="increased density.png" alt="Cloth at rest with increased density" width="500"/>
+				<figcaption><b>Increased Density:</b> Heavy sagging and stretching at the top pinned corners.</figcaption>
+			</figure>
+		</div>
+		
+		<hr/>
+		
+		<h3>3. Effects of Varying Damping</h3>
+		<p>Damping simulates the loss of kinetic energy in the system over time, acting as a substitute for air resistance and internal friction.</p>
+		<ul>
+			<li><strong>Low Damping:</strong> The system retains almost all of its kinetic energy. The cloth swings back and forth chaotically and ripples travel through the fabric. It takes a significantly long time to finally settle.</li>
+			<li><strong>High Damping:</strong> The system's kinetic energy is sapped away almost instantly. The cloth falls sluggishly—as if dropping through a thick fluid like molasses—and comes to a dead stop almost immediately without any extra swinging or bouncing.</li>
+		</ul>
+		
+		<div style="text-align: center; margin-top: 15px;">
+			<figure>
+				<img src="increased damping.png" alt="Cloth falling slowly with increased damping" width="500"/>
+				<figcaption><b>Increased Damping:</b> The cloth drops heavily and smoothly with no excess swinging or kinetic energy.</figcaption>
+			</figure>
+		</div>
+		
+		<hr/>
+		
+		<h3>4. Final Resting State (pinned4.json)</h3>
+		<p>Below is the shaded cloth from <code>scene/pinned4.json</code> in its final resting state after the sim. This was rendered using the default simulation parameters: $k_s$ = 5000, density = 15, and damping = 0.2%.</p>
+		
+		<div style="text-align: center; margin-top: 15px;">
+			<figure>
+				<img src="resting.png" alt="Shaded cloth pinned by 4 corners at rest" width="600"/>
+				<figcaption><b>pinned4.json:</b> Final resting state under default parameters.</figcaption>
+			</figure>
+		</div>
 		<h2>Part 3: Handling collisions with other objects</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
