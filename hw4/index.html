@@ -28,7 +28,7 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 4 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Gautam Rampur </div>
 
 		<br>
 
@@ -38,17 +38,19 @@
 
 		Link to GitHub repository: (TODO) <a href="https://github.com/grampur-coder/hw-4">https://github.com/grampur-coder/hw-4</a>
 
-		<figure>
-			<img src="clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+
 
 		<!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
 		<h2>I USED AI FOR HELP WITH HTML FORMATTING AND WORDING</ht2>
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+			<h2>Overview</h2>
+			<p>
+				For this project I built a real-time cloth simulator from scratch. I made a grid of point masses connected by springs and used verlet integration for the physics. I also added spatial hashing so the cloth doesn't clip through itself and wrote custom GLSL shaders to move the rendering to the GPU.
+			</p>
+			<p>
+				The coolest part was definitely going from CPU to GPU rendering. Hw3 took forever to render just one frame but these shaders run at 60 FPS instantly and it's amazing to see how it worked. it was also pretty awesome seeing how basic physics can make a simple grid move so realistically, and of course how the shaders made things look so realistic.
+			</p>
 
 		<h2>Part 1: Masses and springs</h2>
 		Below are the images of the different constraints on the wireframe.
@@ -176,7 +178,7 @@
 		<div style="text-align: center; margin-top: 15px;">
 			<figure>
 				<img src="plane.png" alt="Cloth resting on a plane" width="600"/>
-				<figcaption><b>plane.json:</b> Cloth lying peacefully at rest.</figcaption>
+				<figcaption><b>plane.json:</b> Cloth lying at rest.</figcaption>
 			</figure>
 		</div>
 		<h2>Part 4: Handling self-collisions</h2>
@@ -188,7 +190,7 @@
 			Then, for every point mass,I only check for collisions against other point masses that share the same 3D bounding box. If two point masses are closer than <code>2 * thickness</code>, I compute a correction vector to push the current point mass apart from its neighbor. Finally, I average all correction vectors for a given point mass and scale it down by <code>simulation_steps</code> to ensure smooth, stable position updates.
 		</p>
 
-		<h3>Self-Collision Sequence</h3>
+		<h3>Self Collision Sequence</h3>
 		<p>Below is a sequence of the cloth falling and folding on itself, demonstrating the spatial hashing self-collisions in action.</p>
 		
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 20px; margin-top: 15px;">
@@ -213,7 +215,7 @@
 		<h4>Varying Density:</h4>
 		<ul>
 			<li><strong>High Density:</strong> The cloth is  heavier, causing the top layers to crash down with more gravitational force. The repulsive self-collision forces struggle more against gravity, making the cloth flatten out aggressively and the folds appear much tighter.</li>
-			<li><strong>Low Density:</strong> The cloth is light. Because gravity exerts less downward force, the self-collision repulsive forces easily keep the layers separated. The resting cloth looks very "fluffy" with larger gaps between the folds.</li>
+			<li><strong>Low Density:</strong> The cloth is light. Because gravity exerts less downward force, the self collision repulsive forces easily keep the layers separated. The resting cloth looks very fluffy with larger gaps between the folds.</li>
 		</ul>
 		
 		<h4>Varying Spring Constant ($k_s$):</h4>
@@ -230,9 +232,9 @@
 			<strong>Vertex shaders</strong> and <strong>fragment shaders</strong> work together to create lighting and material effects. The vertex shader runs first, it applies transformations to the 3D geometry. It also computes per vertex attributes like normals and UV coordinates, passing them forward as <i>varyings</i>. These varyings are interpolated across the triangles using barycentric coordinates and fed into the fragment shader. The fragment shader then takes these interpolated values and computes the final color for each individual pixel based on lighting equations and texture samples.
 		</p>
 		
-		<h3>Blinn-Phong Shading Model</h3>
+		<h3>Blinn Phong Shading Model</h3>
 		<p>
-			The Blinn-Phong shading model is a computationally efficient way to simulate how light interacts with surfaces it results in realistic highlights and shading. It combines 3 distinct lighting components to calculate the final color:
+			The Blinn Phong shading model is a computationally efficient way to simulate how light interacts with surfaces it results in realistic highlights and shading. It combines 3 distinct lighting components to calculate the final color:
 		</p>
 		<ul>
 			<li><strong>Ambient Light:</strong> Cconstant baseline illumination applied to all objects, ensuring shadows are not just black.</li>
@@ -312,7 +314,7 @@
 		
 		<hr/>
 		
-		<h3>Environment-Mapped Reflections (Mirror Shader)</h3>
+		<h3>Environment Mapped Reflections (Mirror Shader)</h3>
 		<div style="display: flex; flex-direction: row; justify-content: center; gap: 20px; margin-top: 15px;">
 			<figure style="text-align: center;">
 				<img src="mirror.png" alt="Mirror Shader on Cloth" width="400"/>
@@ -334,9 +336,9 @@
 			that value into 3 distinct lighting bands using the floor() function. 
 		</p>
 		<p>
-			To enhance the comic-book style, I also calculated a rim lighting effect by taking the dot product 
+			To enhance the comic book style, I also calculated a rim lighting effect by taking the dot product 
 			of the view vector and the surface normal. When this value approached zero 
-			I applied a dark <code>vec3</code> color using <code>smoothstep()</code> to create they cartoonish outline around the object that you typically see. (I used lots of outside resources for help on this idea)
+			I applied a dark <code>vec3</code> color using <code>smoothstep()</code> to create they cartoonish outline around the object that you typically see in comic styled art. (I used lots of outside resources for help on this idea). 
 		</p>
 		
 		<div style="text-align: center; margin-top: 15px;">
@@ -351,22 +353,22 @@
 		
 		<h3>Feature 1: Wind</h3>
 		<p>
-			I implemented a custom wind force that  interacts with the cloth. Rather than applying a uniform directional force (I created a spatially varying turbulence function. By combining <code>sin()</code> and <code>cos()</code> functions based on each <code>PointMass</code>'s exact $X$ and $Y$ coordinates, mixed with a static frame counter to evolve the math over time, the wind pushes different areas of the cloth with varying intensities. This causes the cloth to ripple realistically as if there was real wind.
+			I implemented a custom wind force that  interacts with the cloth. By combining <code>sin()</code> and <code>cos()</code> functions based on each <code>PointMass</code>'s exact $X$ and $Y$ coordinates, mixed with a static frame counter to evolve the math over time, the wind pushes different areas of the cloth with varying intensities. This causes the cloth to ripple realistically as if there was real wind.
 		</p>
 		
 		<div style="text-align: center; margin-top: 15px; margin-bottom: 25px;">
 			<video width="700" autoplay loop muted playsinline style="border: 1px solid #ccc; border-radius: 8px;">
-				<source src="images/wind_ripple.mp4" type="video/mp4">
+				<source src="wind.mp4" type="video/mp4">
 				Your browser does not support the video tag.
 			</video>
-			<figcaption style="margin-top: 10px;"><i>Real-time simulation of the cloth billowing under spatially varying wind forces.</i></figcaption>
+			<figcaption style="margin-top: 10px;"><i>Real time simulation of the cloth moving under spatially varying wind forces.</i></figcaption>
 		</div>
 		
 		<br/>
 		
 		<h3>Feature 2: Moving Objects via GUI</h3>
 		<p>
-			I modified the simulation gui to allow users to translate collision objects in real-time using the graphical user interface. By editing <code>clothSimulator.cpp</code>, I added logic inside the GUI loop that iterates through the <code>collision_objects</code> vector. Using a <code>dynamic_cast</code>, the program identifies if a <code>Sphere</code> primitive is present in the current scene. If it is, the GUI dynamically generates sliders bound by reference to the sphere's <code>origin.x</code>, <code>origin.y</code>, and <code>origin.z</code> coordinates. This allows the user to slide the sphere around the scene at runtime, actively dragging and pushing the cloth that rests on top of it. The
+			I modified the simulation gui to allow users to translate collision objects in real time using the graphical user interface. By editing <code>clothSimulator.cpp</code>, I added logic inside the GUI loop that iterates through the <code>collision_objects</code> vector. Using a <code>dynamic_cast</code>, the program identifies if a <code>Sphere</code> primitive is present in the current scene. If it is, the GUI dynamically generates sliders bound by reference to the sphere's <code>origin.x</code>, <code>origin.y</code>, and <code>origin.z</code> coordinates. This allows the user to slide the sphere around the scene at runtime, actively dragging and pushing the cloth that rests on top of it. The
 		</p>
 		
 		<div style="text-align: center; margin-top: 15px; margin-bottom: 25px;">
